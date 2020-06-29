@@ -37,6 +37,9 @@ namespace VRDR
         /// <summary>The Certifier.</summary>
         private Practitioner Certifier;
 
+        /// <summary>The Pronouncer.</summary>
+        private Practitioner Pronouncer;
+
         /// <summary>The Mortician.</summary>
         private Practitioner Mortician;
 
@@ -170,6 +173,13 @@ namespace VRDR
             string[] certifier_profile = { "http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Certifier" };
             Certifier.Meta.Profile = certifier_profile;
 
+            // Start with an empty pronouncer.
+            Pronouncer = new Practitioner();
+            Pronouncer.Id = Guid.NewGuid().ToString();
+            Pronouncer.Meta = new Meta();
+            string[] pronouncer_profile = { "http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Death-Pronouncement-Performer" };
+            Pronouncer.Meta.Profile = pronouncer_profile;
+
             // Start with an empty mortician.
             Mortician = new Practitioner();
             Mortician.Id = Guid.NewGuid().ToString();
@@ -232,6 +242,7 @@ namespace VRDR
             Composition.Attester.Add(new Composition.AttesterComponent());
             Composition.Attester.First().Party = new ResourceReference("urn:uuid:" + Certifier.Id);
             Composition.Attester.First().ModeElement = new Code<Hl7.Fhir.Model.Composition.CompositionAttestationMode>(Hl7.Fhir.Model.Composition.CompositionAttestationMode.Legal);
+            // Axiell: should the Pronouncer also be one of the record Attesters? I think Attester is only for cause of death certification, not death pronouncement.
             Hl7.Fhir.Model.Composition.EventComponent eventComponent = new Hl7.Fhir.Model.Composition.EventComponent();
             eventComponent.Code.Add(new CodeableConcept("http://snomed.info/sct", "308646001", "Death certification (procedure)", null));
             eventComponent.Detail.Add(new ResourceReference("urn:uuid:" + DeathCertification.Id));
@@ -261,6 +272,7 @@ namespace VRDR
             AddReferenceToComposition(DispositionLocation.Id);
             Bundle.AddResourceEntry(Decedent, "urn:uuid:" + Decedent.Id);
             Bundle.AddResourceEntry(Certifier, "urn:uuid:" + Certifier.Id);
+            Bundle.AddResourceEntry(Pronouncer, "urn:uuid:" + Pronouncer.Id);
             Bundle.AddResourceEntry(Mortician, "urn:uuid:" + Mortician.Id);
             Bundle.AddResourceEntry(DeathCertification, "urn:uuid:" + DeathCertification.Id);
             Bundle.AddResourceEntry(InterestedParty, "urn:uuid:" + InterestedParty.Id);
@@ -1068,6 +1080,173 @@ namespace VRDR
                     Identifier identifier = new Identifier();
                     identifier.Value = value;
                     Certifier.Qualification.First().Identifier.Add(identifier);
+                }
+            }
+        }
+
+        /// <summary>Given name(s) of pronouncer.</summary>
+        /// <value>the pronouncer's name (first, middle, etc.)</value>
+        /// <example>
+        /// <para>// Setter:</para>
+        /// <para>string[] names = { "Doctor", "Middle" };</para>
+        /// <para>ExampleDeathRecord.PronouncerGivenNames = names;</para>
+        /// <para>// Getter:</para>
+        /// <para>Console.WriteLine($"Pronouncer Given Name(s): {string.Join(", ", ExampleDeathRecord.PronouncerGivenNames)}");</para>
+        /// </example>
+        [Property("Pronouncer Given Names", Property.Types.StringArr, "Death Pronouncement", "Given name(s) of pronouncer.", true, "http://hl7.org/fhir/us/vrdr/2019May/DeathPronouncementPerformer.html", true, 51)]
+        [FHIRPath("Bundle.entry.resource.where($this is Practitioner).where(meta.profile='http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Death-Pronouncement-Performer')", "name")]
+        public string[] PronouncerGivenNames
+        {
+            get
+            {
+                if (Pronouncer != null &&
+                    Pronouncer.Name.Count() > 0)
+                {
+                    return Pronouncer.Name.First().Given.ToArray();
+                }
+                return new string[0];
+            }
+            set
+            {
+                HumanName name = Pronouncer.Name.SingleOrDefault(n => n.Use == HumanName.NameUse.Official);
+                if (name != null)
+                {
+                    name.Given = value;
+                }
+                else
+                {
+                    name = new HumanName();
+                    name.Use = HumanName.NameUse.Official;
+                    name.Given = value;
+                    Pronouncer.Name.Add(name);
+                }
+            }
+        }
+
+        /// <summary>Family name of pronouncer.</summary>
+        /// <value>the pronouncer's family name (i.e. last name)</value>
+        /// <example>
+        /// <para>// Setter:</para>
+        /// <para>ExampleDeathRecord.PronouncerFamilyName = "Last";</para>
+        /// <para>// Getter:</para>
+        /// <para>Console.WriteLine($"Pronouncer's Last Name: {ExampleDeathRecord.PronouncerFamilyName}");</para>
+        /// </example>
+        [Property("Pronouncer Family Name", Property.Types.String, "Death Pronouncement", "Family name of pronouncer.", true, "http://hl7.org/fhir/us/vrdr/2019May/DeathPronouncementPerformer.html", true, 52)]
+        [FHIRPath("Bundle.entry.resource.where($this is Practitioner).where(meta.profile='http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Death-Pronouncement-Performer')", "name")]
+        public string PronouncerFamilyName
+        {
+            get
+            {
+                if (Pronouncer != null &&
+                    Pronouncer.Name.Count() > 0)
+                {
+                    return Pronouncer.Name.First().Family;
+                }
+                return null;
+            }
+            set
+            {
+                HumanName name = Pronouncer.Name.FirstOrDefault();
+                if (name != null && !String.IsNullOrEmpty(value))
+                {
+                    name.Family = value;
+                }
+                else if (!String.IsNullOrEmpty(value))
+                {
+                    name = new HumanName();
+                    name.Use = HumanName.NameUse.Official;
+                    name.Family = value;
+                    Pronouncer.Name.Add(name);
+                }
+            }
+        }
+
+        /// <summary>Pronouncer's Suffix.</summary>
+        /// <value>the pronouncer's suffix</value>
+        /// <example>
+        /// <para>// Setter:</para>
+        /// <para>ExampleDeathRecord.PronouncerSuffix = "Jr.";</para>
+        /// <para>// Getter:</para>
+        /// <para>Console.WriteLine($"Pronouncer Suffix: {ExampleDeathRecord.PronouncerSuffix}");</para>
+        /// </example>
+        [Property("Pronouncer Suffix", Property.Types.String, "Death Pronouncement", "Pronouncer's Suffix.", true, "http://hl7.org/fhir/us/vrdr/2019May/DeathPronouncementPerformer.html", true, 53)]
+        [FHIRPath("Bundle.entry.resource.where($this is Practitioner).where(meta.profile='http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Death-Pronouncement-Performer')", "name")]
+        public string PronouncerSuffix
+        {
+            get
+            {
+                if (Pronouncer != null &&
+                    Pronouncer.Name.Count() > 0 && Pronouncer.Name.First().Suffix.Count() > 0)
+                {
+                    return Pronouncer.Name.First().Suffix.First();
+                }
+                return null;
+            }
+            set
+            {
+                HumanName name = Pronouncer.Name.FirstOrDefault();
+                if (name != null && !String.IsNullOrEmpty(value))
+                {
+                    string[] suffix = { value };
+                    name.Suffix = suffix;
+                }
+                else if (!String.IsNullOrEmpty(value))
+                {
+                    name = new HumanName();
+                    name.Use = HumanName.NameUse.Official;
+                    string[] suffix = { value };
+                    name.Suffix = suffix;
+                    Pronouncer.Name.Add(name);
+                }
+            }
+        }
+
+        /// <summary>Pronouncer Qualification.</summary>
+        /// <value>the pronouncer qualification. A Dictionary representing a code, containing the following key/value pairs:
+        /// <para>"code" - the code</para>
+        /// <para>"system" - the code system this code belongs to</para>
+        /// <para>"display" - a human readable meaning of the code</para>
+        /// </value>
+        /// <example>
+        /// <para>// Setter:</para>
+        /// <para>Dictionary&lt;string, string&gt; qualification = new Dictionary&lt;string, string&gt;();</para>
+        /// <para>qualification.Add("code", "3060");</para>
+        /// <para>qualification.Add("system", "urn:oid:2.16.840.1.114222.4.11.7186");</para>
+        /// <para>qualification.Add("display", "Physicians and surgeons");</para>
+        /// <para>ExampleDeathRecord.PronouncerQualification = qualification;</para>
+        /// <para>// Getter:</para>
+        /// <para>Console.WriteLine($"\tPronouncer Qualification: {ExampleDeathRecord.PronouncerQualification['display']}");</para>
+        /// </example>
+        [Property("Pronouncer Qualification", Property.Types.Dictionary, "Death Pronouncement", "Pronouncer Qualification.", true, "http://hl7.org/fhir/us/vrdr/2019May/DeathPronouncementPerformer.html", false, 54)]
+        [PropertyParam("code", "The code used to describe this concept.")]
+        [PropertyParam("system", "The relevant code system.")]
+        [PropertyParam("display", "The human readable version of this code.")]
+        [FHIRPath("Bundle.entry.resource.where($this is Practitioner).where(meta.profile='http://hl7.org/fhir/us/vrdr/StructureDefinition/VRDR-Death-Pronouncement-Performer')", "qualification")]
+        public Dictionary<string, string> PronouncerQualification
+        {
+            get
+            {
+                if (Pronouncer != null)
+                {
+                    Practitioner.QualificationComponent qualification = Pronouncer.Qualification.FirstOrDefault();
+                    if (qualification != null && qualification.Code != null && qualification.Code.Coding.FirstOrDefault() != null)
+                    {
+                        return CodeableConceptToDict(qualification.Code);
+                    }
+                }
+                return EmptyCodeDict();
+            }
+            set
+            {
+                if (Pronouncer.Qualification.FirstOrDefault() == null)
+                {
+                    Practitioner.QualificationComponent qualification = new Practitioner.QualificationComponent();
+                    qualification.Code = DictToCodeableConcept(value);
+                    Pronouncer.Qualification.Add(qualification);
+                }
+                else
+                {
+                    Pronouncer.Qualification.First().Code = DictToCodeableConcept(value);
                 }
             }
         }
@@ -5198,6 +5377,7 @@ namespace VRDR
                     DeathDateObs.Code = new CodeableConcept("http://loinc.org", "81956-5", "Date and time of death", null);
                     DeathDateObs.Subject = new ResourceReference("urn:uuid:" + Decedent.Id);
                     DeathDateObs.Performer.Add(new ResourceReference("urn:uuid:" + Certifier.Id));
+                    // Axiell: should the performer of pronouncement always be the Certifier, or should it be the Pronouncer?
                     DeathDateObs.Effective = new FhirDateTime(value);
                     AddReferenceToComposition(DeathDateObs.Id);
                     Bundle.AddResourceEntry(DeathDateObs, "urn:uuid:" + DeathDateObs.Id);
@@ -5246,6 +5426,7 @@ namespace VRDR
                     DeathDateObs.Code = new CodeableConcept("http://loinc.org", "81956-5", "Date and time of death", null);
                     DeathDateObs.Subject = new ResourceReference("urn:uuid:" + Decedent.Id);
                     DeathDateObs.Performer.Add(new ResourceReference("urn:uuid:" + Certifier.Id));
+                    // Axiell: should the performer of pronouncement always be the Certifier, or should it be the Pronouncer?
                     Observation.ComponentComponent component = new Observation.ComponentComponent();
                     component.Code = new CodeableConcept("http://loinc.org", "80616-6", "Date and time pronounced dead", null);
                     component.Value = new FhirDateTime(value);
@@ -6173,7 +6354,7 @@ namespace VRDR
             {
                 throw new System.ArgumentException("The Composition is missing an attestor (a reference to the Certifier/Practitioner resource).");
             }
-            var practitionerEntry = Bundle.Entry.FirstOrDefault( entry => entry.Resource.ResourceType == ResourceType.Practitioner && (entry.FullUrl == Composition.Attester.First().Party.Reference || (entry.Resource.Id != null && entry.Resource.Id == Composition.Attester.First().Party.Reference)));
+            var practitionerEntry = Bundle.Entry.FirstOrDefault(entry => entry.Resource.ResourceType == ResourceType.Practitioner && (entry.FullUrl == Composition.Attester.First().Party.Reference || (entry.Resource.Id != null && entry.Resource.Id == Composition.Attester.First().Party.Reference)));
             if (practitionerEntry != null)
             {
                 Certifier = (Practitioner)practitionerEntry.Resource;
@@ -6183,8 +6364,19 @@ namespace VRDR
                 throw new System.ArgumentException("Failed to find a Certifier (Practitioner). The third entry in the FHIR Bundle is usually the Certifier (Practitioner). Either the Certifier is missing from the Bundle, or the attestor reference specified in the Composition is incorrect.");
             }
 
+            // Grab Pronouncer
+            /* Axiell Notes:
+             *  - not sure how to correctly get the Pronouncer entry here, since he/she is not an Attester (or should he/she be?)
+             *  - I don't think the pronouncer is always required, either, so there is no exception thrown when missing.
+            var pronouncerEntry = Bundle.Entry.FirstOrDefault(entry => entry.Resource.ResourceType == ResourceType.Practitioner && (entry.FullUrl == Composition..pron.Attester.First().Party.Reference || (entry.Resource.Id != null && entry.Resource.Id == Composition.Attester.First().Party.Reference)));
+            if (pronouncerEntry != null)
+            {
+                Pronouncer = (Practitioner)practitionerEntry.Resource;
+            }
+            */
+
             // Grab Mortician
-            var morticianEntry = Bundle.Entry.FirstOrDefault( entry => entry.Resource.ResourceType == ResourceType.Practitioner && ((Practitioner)entry.Resource).Id != Certifier.Id );
+            var morticianEntry = Bundle.Entry.FirstOrDefault( entry => entry.Resource.ResourceType == ResourceType.Practitioner && ((Practitioner)entry.Resource).Id != Certifier.Id && (Pronouncer != null && ((Practitioner)entry.Resource).Id != Pronouncer.Id));
             if (morticianEntry != null)
             {
                 Mortician = (Practitioner)morticianEntry.Resource;
