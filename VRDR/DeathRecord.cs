@@ -3573,7 +3573,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Residence within city limits: {ExampleDeathRecord.ResidenceWithinCityLimitsBoolean}");</para>
         /// </example>
-        [Property("Residence Within City Limits Boolean", Property.Types.Bool, "Decedent Demographics", "Decedent's residence is/is not within city limits.", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Decedent.html", true, 21)]
+        [Property("Residence Within City Limits Boolean", Property.Types.Bool, "Decedent Demographics", "Decedent's residence is/is not within city limits.", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Decedent.html", false, 21)]
         [FHIRPath("Bundle.entry.resource.where($this is Patient)", "address")]
         public bool? ResidenceWithinCityLimitsBoolean
         {
@@ -5011,7 +5011,7 @@ namespace VRDR
             }
         }
 
-        /// <summary>Decedent's Military Service. This is a helper method, to obtain the code use the MilitaryService property instead.</summary>
+        /// <summary>Decedent's Military Service. This is a convenience method, to obtain the code use the MilitaryService property instead.</summary>
         /// <value>the decedent's military service. Whether the decedent served in the military, a null value means "unknown".</value>
         /// <example>
         /// <para>// Setter:</para>
@@ -5019,8 +5019,8 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Military Service: {ExampleDeathRecord.MilitaryServiceBoolean}");</para>
         /// </example>
-        [Property("Military Service Boolean", Property.Types.Bool, "Decedent Demographics", "Decedent's Military Service.", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Decedent-Military-Service.html", false, 23)]
-        [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='55280-2')", "")]
+       [Property("Military Service Boolean", Property.Types.Bool, "Decedent Demographics", "Decedent's Military Service.", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Decedent-Military-Service.html", false, 23)]
+       [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='55280-2')", "")]
         public bool? MilitaryServiceBoolean
         {
             get
@@ -5654,7 +5654,7 @@ namespace VRDR
             }
         }
 
-        /// <summary>Autopsy Performed Indicator Boolean. This is a helper method, to access the code use the AutopsyPerformedIndicator property.</summary>
+        /// <summary>Autopsy Performed Indicator Boolean. This is a convenience method, to access the code use the AutopsyPerformedIndicator property.</summary>
         /// <value>autopsy performed indicator. A null value indicates "not applicable".</value>
         /// <example>
         /// <para>// Setter:</para>
@@ -5662,7 +5662,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Autopsy Performed Indicator: {ExampleDeathRecord.AutopsyPerformedIndicatorBoolean}");</para>
         /// </example>
-        [Property("Autopsy Performed Indicator Boolean", Property.Types.Bool, "Death Investigation", "Autopsy Performed Indicator.", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Autopsy-Performed-Indicator.html", true, 29)]
+        [Property("Autopsy Performed Indicator Boolean", Property.Types.Bool, "Death Investigation", "Autopsy Performed Indicator.", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Autopsy-Performed-Indicator.html", false, 29)]
         [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='85699-7')", "")]
         public bool? AutopsyPerformedIndicatorBoolean
         {
@@ -6037,7 +6037,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Autopsy Results Available: {ExampleDeathRecord.AutopsyResultsAvailableBoolean}");</para>
         /// </example>
-        [Property("Autopsy Results Available Boolean", Property.Types.Bool, "Death Investigation", "Autopsy results available, used to complete cause of death.", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Autopsy-Performed-Indicator.html", true, 31)]
+        [Property("Autopsy Results Available Boolean", Property.Types.Bool, "Death Investigation", "Autopsy results available, used to complete cause of death.", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Autopsy-Performed-Indicator.html", false, 31)]
         [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='85699-7')", "")]
         public bool? AutopsyResultsAvailableBoolean
         {
@@ -6529,7 +6529,7 @@ namespace VRDR
             }
         }
 
-        /// <summary>Examiner Contacted Boolean. This is a conenience method, to access the code use ExaminerContacted instead.</summary>
+        /// <summary>Examiner Contacted Boolean. This is a convenience method, to access the code use ExaminerContacted instead.</summary>
         /// <value>if a medical examiner was contacted. A null value indicates "unknown".</value>
         /// <example>
         /// <para>// Setter:</para>
@@ -6537,7 +6537,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Examiner Contacted: {ExampleDeathRecord.ExaminerContacted}");</para>
         /// </example>
-        [Property("Examiner Contacted Boolean", Property.Types.Bool, "Death Investigation", "Examiner Contacted.", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Examiner-Contacted.html", true, 27)]
+        [Property("Examiner Contacted Boolean", Property.Types.Bool, "Death Investigation", "Examiner Contacted.", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-Examiner-Contacted.html", false, 27)]
         [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='74497-9')", "")]
         public bool? ExaminerContactedBoolean
         {
@@ -7007,7 +7007,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Injury At Work?: {ExampleDeathRecord.InjuryAtWorkBoolean}");</para>
         /// </example>
-        [Property("Injury At Work?", Property.Types.Bool, "Death Investigation", "Did the injury occur at work?", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-InjuryIncident.html", true, 42)]
+        [Property("Injury At Work?", Property.Types.Bool, "Death Investigation", "Did the injury occur at work?", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-InjuryIncident.html", false, 42)]
         [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='11374-6')", "")]
         public bool? InjuryAtWorkBoolean
         {
@@ -7125,7 +7125,7 @@ namespace VRDR
             }
         }
 
-        /// <summary>Transportation Event Boolean?</summary>
+        /// <summary>Transportation Event Boolean? This is a convenience method, to access the code use the Transportation Event property instead.</summary>
         /// <value>was the injury associated with a transportation event? A null value indicates "unknown"</value>
         /// <example>
         /// <para>// Setter:</para>
@@ -7133,7 +7133,7 @@ namespace VRDR
         /// <para>// Getter:</para>
         /// <para>Console.WriteLine($"Transportation Event?: {ExampleDeathRecord.TransportationEventBoolean}");</para>
         /// </example>
-        [Property("Transportation Event Boolean?", Property.Types.Bool, "Death Investigation", "Was the injury associated with a transportation event?", true, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-InjuryIncident.html", true, 44)]
+        [Property("Transportation Event Boolean?", Property.Types.Bool, "Death Investigation", "Was the injury associated with a transportation event?", false, "http://build.fhir.org/ig/HL7/vrdr/StructureDefinition-VRDR-InjuryIncident.html", false, 44)]
         [FHIRPath("Bundle.entry.resource.where($this is Observation).where(code.coding.code='11374-6')", "")]
         public bool? TransportationEventBoolean
         {
