@@ -801,8 +801,8 @@
         </subject>
         <valueCodeableConcept>
           <coding>
-            <system value="http://terminology.hl7.org/CodeSystem/v3-EducationLevel" />
-            <code value="BD" />
+            <system value="2.16.840.1.114222.4.5.274" />
+            <code value="PHC1453" />
             <display value="College or baccalaureate degree complete" />
           </coding>
         </valueCodeableConcept>

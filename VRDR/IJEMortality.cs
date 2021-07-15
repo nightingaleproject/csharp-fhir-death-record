@@ -1501,21 +1501,21 @@ namespace VRDR
                 string code = Dictionary_Get_Full("DEDUC", "EducationLevel", "code");
                 switch (code)
                 {
-                    case "ELEM": // Elementary School
+                    case "PHC1448": // Elementary School
                         return "1";
-                    case "SEC": // Some secondary or high school education
+                    case "PHC1449": // Some secondary or high school education
                         return "2";
-                    case "HS": // High School Graduate or GED Completed
+                    case "PHC1450": // High School Graduate or GED Completed
                         return "3";
-                    case "SCOL": // Some College education
+                    case "PHC1451": // Some College education
                         return "4";
-                    case "ASSOC": // Associate's or technical degree complete
+                    case "PHC1452": // Associate's or technical degree complete
                         return "5";
-                    case "BD": // College or baccalaureate degree complete
+                    case "PHC1453": // College or baccalaureate degree complete
                         return "6";
-                    case "GD": // Graduate or professional Degree complete
+                    case "PHC1454": // Graduate or professional Degree complete
                         return "7";
-                    case "POSTG": // Doctoral or post graduate education
+                    case "PHC1455": // Doctoral or post graduate education
                         return "8";
                     case "UNK": // Unknown
                         return "9";
@@ -1526,51 +1526,44 @@ namespace VRDR
             {
                 if (!String.IsNullOrWhiteSpace(value))
                 {
+                    Dictionary_Set("DEDUC", "EducationLevel", "system", "2.16.840.1.114222.4.5.274"); // CDC Local Coding System, except for UNK
                     switch (value)
                     {
                         case "1":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "ELEM");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Elementary School");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1448");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "8th grade or less");
                             break;
                         case "2":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "SEC");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Some secondary or high school education");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1449");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "9th through 12th grade; no diploma");
                             break;
                         case "3":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "HS");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "High School or secondary school degree complete");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1450");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "High School Graduate or GED Completed");
                             break;
                         case "4":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "SCOL");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Some College education");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1451");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Some college credit, but no degree");
                             break;
                         case "5":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "ASSOC");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Associate's or technical degree complete");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1452");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Associate Degree");
                             break;
                         case "6":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "BD");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "College or baccalaureate degree complete");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1453");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Bachelor's Degree");
                             break;
                         case "7":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "GD");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Graduate or professional Degree complete");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1454");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Master's Degree");
                             break;
                         case "8":
-                            Dictionary_Set("DEDUC", "EducationLevel", "code", "POSTG");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-EducationLevel");
-                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Doctoral or post graduate education");
+                            Dictionary_Set("DEDUC", "EducationLevel", "code", "PHC1455");
+                            Dictionary_Set("DEDUC", "EducationLevel", "display", "Doctorate Degree or Professional Degree");
                             break;
                         case "9":
                             Dictionary_Set("DEDUC", "EducationLevel", "code", "UNK");
-                            Dictionary_Set("DEDUC", "EducationLevel", "system", "http://terminology.hl7.org/CodeSystem/v3-NullFlavor");
+                            Dictionary_Set("DEDUC", "EducationLevel", "system", "2.16.840.1.113883.5.1008");   // CDC Null Flavor Coding System
                             Dictionary_Set("DEDUC", "EducationLevel", "display", "Unknown");
                             break;
                     }

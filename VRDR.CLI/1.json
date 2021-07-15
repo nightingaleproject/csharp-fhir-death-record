@@ -994,8 +994,8 @@
         "valueCodeableConcept": {
           "coding": [
             {
-              "system": "http://terminology.hl7.org/CodeSystem/v3-EducationLevel",
-              "code": "BD",
+              "system": "2.16.840.1.114222.4.5.274",
+              "code": "PHC1453",
               "display": "College or baccalaureate degree complete"
             }
           ]
